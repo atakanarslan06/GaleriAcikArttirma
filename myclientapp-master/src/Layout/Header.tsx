@@ -31,7 +31,7 @@ function Header() {
         <nav className="navbar navbar-expand-lg navbar-light bg-gray">
   <div className='container' >
 
-<a className="navbar-brand" href="/">My Galaxy Auction</a>
+<a className="navbar-brand" href="/">Galerim</a>
 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
  <span className="navbar-toggler-icon"></span>
 </button>
@@ -53,12 +53,12 @@ function Header() {
     <ul className="navbar-nav">
       <li className="nav-item dropdown">
         <button className="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-          Menu's
+          Menu
         </button>
         <ul className="dropdown-menu dropdown-menu-dark">
 
         <NavLink to={"/Admin/VehicleIndex"} >
-        <a className="dropdown-item" href="#">Vehicle List</a>
+        <a className="dropdown-item" href="#">Araba Listesi</a>
 
         </NavLink>
         </ul>
@@ -72,7 +72,7 @@ function Header() {
  {
     userStore.nameid != "" ? (
 
-        <a type='button' className="btn btn-success " onClick={()=>handleLogout()} >Logout</a>
+        <a type='button' className="btn btn-success " onClick={()=>handleLogout()} >Çıkış Yap</a>
 
 
     ) : (
@@ -80,7 +80,7 @@ function Header() {
         <>
         <li className="nav-item" style={{marginRight:"5px"}}>
         <NavLink to={"/register"} >
-        <a className="btn btn-success " >Register</a>
+        <a className="btn btn-success " >Kayıt Ol</a>
 
         </NavLink>
      
@@ -89,7 +89,7 @@ function Header() {
         
         <li className="nav-item" style={{marginRight:"5px"}}>
         <NavLink to={"/login"} >
-        <a className="btn btn-success " >Login</a>
+        <a className="btn btn-success " >Giris Yap</a>
 
         </NavLink>
      

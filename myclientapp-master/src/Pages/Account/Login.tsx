@@ -33,7 +33,7 @@ function Login() {
                 }))
 
                 navigate("/");
-                ToastrNotify("You are successfully logged in","success");
+                ToastrNotify("Giriş Başarılı","success");
 
               }
     }
@@ -45,15 +45,15 @@ function Login() {
        <div className="container">
          
          <div className="alert alert-warning text-center my-4">
-           For Example
+           GALERİM
          </div>
          
          <div className="row justify-content-center">
            <div className="col-12 col-md-8 col-lg-8 col-xl-6">
              <div className="row">
                <div className="col text-center">
-                 <h1>Login</h1>
-                 <p className="text-h3">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia. </p>
+                 <h1>Giriş Yap</h1>
+                 <p className="text-h3">Birbirinden Farklı Lüks Spor Arabaları Keşfet, Dilediğin Fiyata Al </p>
                </div>
              </div>
              <div className="row align-items-center">
@@ -70,14 +70,7 @@ function Login() {
              </div>
              <div className="row justify-content-start mt-4">
                <div className="col">
-                 <div className="form-check">
-                   <label className="form-check-label">
-                     <input type="checkbox" className="form-check-input"/>
-                     I Read and Accept <a href="https://www.froala.com">Terms and Conditions</a>
-                   </label>
-                 </div>
-   
-                 <button onClick={()=>handleLoginSubmit()} className="btn btn-primary mt-4">Submit</button>
+                 <button onClick={()=>handleLoginSubmit()} className="btn btn-primary mt-4">Giris Yap</button>
                </div>
              </div>
            </div>

@@ -124,7 +124,7 @@ function BidsDetail(props:{vehicleId:string}) {
         ) : (
 
             <div className='container mb-5'  >
-                <button className='btn btn-warning' type='button' onClick={()=>handleBidCheckout(props.vehicleId)} >Pay PreAuction Price ${response_data.currentData?.result.auctionPrice} </button>
+                <button className='btn btn-warning' type='button' onClick={()=>handleBidCheckout(props.vehicleId)} >Açık Arttırmaya Katılma Bedeli ${response_data.currentData?.result.auctionPrice} </button>
             </div>
         )
     }

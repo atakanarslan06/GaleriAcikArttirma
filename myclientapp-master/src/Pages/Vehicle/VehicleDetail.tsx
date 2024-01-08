@@ -10,7 +10,7 @@ function VehicleDetail() {
         const {data,isLoading} = useGetVehicleByIdQuery(vehicleId)    
 
         const safeVehicleId = vehicleId || ""
-        var highBid = 0;
+        var highBid = 20000;
 
         if (data) {
           if (data.result.bids.length > 0) {
@@ -31,9 +31,9 @@ function VehicleDetail() {
     <>
     <div className='auction-item text-center'>
         <img className='container' src={data.result.image} ></img>
-        <h2> Brand-Model : {data.result.brandAndModel} </h2>
-        <p>Description: {data.result.additionalInformation} </p>
-        <p> Current Bid: {highBid} </p>
+        <h2> Marka Modeli : {data.result.brandAndModel} </h2>
+        <p>Hakkında: {data.result.additionalInformation} </p>
+        <p> Mevcut Teklif: {highBid}$ </p>
     </div>
 
     <BidsDetail vehicleId={safeVehicleId} ></BidsDetail>

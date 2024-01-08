@@ -81,22 +81,22 @@ if (data) {
                         </div>
                     <div className='container' >
                         <div className='form-group mt-3' >
-                            <span className='text-black' > <strong> Name </strong> </span>
-                            <input className="form-control" type="text" placeholder="Default input" defaultValue={name} onChange={(e) => setNameState(e.target.value)} aria-label="default input example"></input>
+                            <span className='text-black' > <strong> Adınız Soyadınız </strong> </span>
+                            <input className="form-control" type="text" placeholder="Adınız Soyadınız" defaultValue={name} onChange={(e) => setNameState(e.target.value)} aria-label="default input example"></input>
                         </div>
                         <div className='form-group mt-3' >
                             <span className='text-black' > <strong> Email </strong> </span>
-                            <input className="form-control" type="text" placeholder="Default input"  defaultValue={email} onChange={(e) => setEmailState(e.target.value)} aria-label="default input example"></input>
+                            <input className="form-control" type="text" placeholder="Email"  defaultValue={email} onChange={(e) => setEmailState(e.target.value)} aria-label="default input example"></input>
                         </div>
                         <div className='form-group mt-3' >
-                            <span className='text-black' > <strong> PhoneNumber </strong> </span>
-                            <input className="form-control" type="text" placeholder="Default input"  defaultValue={phone} onChange={(e) => setPhoneState(e.target.value)} aria-label="default input example"></input>
+                            <span className='text-black' > <strong> Telefon Numarası </strong> </span>
+                            <input className="form-control" type="text" placeholder="Telefon Numarası"  defaultValue={phone} onChange={(e) => setPhoneState(e.target.value)} aria-label="default input example"></input>
                         </div>
                     </div>
                     <div className='card-footer' >
                         <button type="submit" className="btn btn-lg btn-success form-control mt-3"  >
                            {
-                            loading? (<Loader></Loader>) : " Pay Auction Price"
+                            loading? (<Loader></Loader>) : " Açık Arttırmaya Katılma Bedelini Öde"
                            }
                            
                             
