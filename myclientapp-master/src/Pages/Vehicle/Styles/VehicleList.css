@@ -9,8 +9,8 @@
     max-height: 600px;
     margin: 20px;
     padding: 20px;
-    background-color: rgb(119, 121, 118);
-    color: #fff;
+    background-color: rgb(131, 150, 148);
+    color: #ffffff;
     
   }
   
@@ -26,17 +26,17 @@
   
   .card-details h2 {
     font-size: 1.5rem;
-    color: #ff0000; /* Kırmızı başlık */
+    color: #a33f3f; /* Kırmızı başlık */
   }
   
   .card-details p {
     margin: 5px 0;
-    color: #fff;
+    color: #ffffffde;
   }
   
   .card-action button {
-    background-color: #ff0000; /* Kırmızı düğme arka planı */
-    color: #000; /* Siyah düğme metni */
+    background-color: #b93939; /* Kırmızı düğme arka planı */
+    color: #eea24c; /* Siyah düğme metni */
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
@@ -51,6 +51,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Sayfa yüksekliğine göre ayarlayabilirsiniz */
+    height: 100vh; 
   }
 
