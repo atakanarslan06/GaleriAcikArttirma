@@ -26,7 +26,10 @@ namespace MyGalaxy_Auction_Business.Concrete
 
         public async Task<ApiResponse> AutomaticallyCreateBid(CreateBidDTO model)
         {
+            // Kullanıcının belirli bir araç için ödeme yapmış olup olmadığını kontrol eder
             var isPaid = await CheckIsPaidAuction(model.UserId, model.VehicleId);
+
+            // Eğer kullanıcı ödeme yapmamışsa, işlem başarısız olur ve uygun bir hata mesajı eklenerek yanıt döndürülür
             if (!isPaid)
             {
                 response.isSuccess = false;
@@ -34,19 +37,41 @@ namespace MyGalaxy_Auction_Business.Concrete
                 return response;
             }
 
-            var result = await context.Bids.Where(x => x.VehicleId == model.VehicleId && x.Vehicle.IsActive == true).OrderByDescending(x => x.BidAmount).ToListAsync();
+            // Aktif olan bir araç için mevcut en yüksek teklifi getirir
+            var result = await context.Bids
+                .Where(x => x.VehicleId == model.VehicleId && x.Vehicle.IsActive == true)
+                .OrderByDescending(x => x.BidAmount)
+                .ToListAsync();
+
+            // Eğer mevcut en yüksek teklif bulunamazsa, işlem başarısız olur ve uygun bir hata mesajı eklenerek yanıt döndürülür
             if (result.Count == 0)
             {
                 response.isSuccess = false;
                 return response;
             }
+
+            // Yeni bir teklif nesnesi oluşturulur ve CreateBidDTO modelinden haritalama yapılır
             var objDTO = mapper.Map<Bid>(model);
+
+            // Yeni teklifin tutarını belirler. Mevcut en yüksek teklifin %10 üstüne eklenir
             objDTO.BidAmount = result[0].BidAmount + (result[0].BidAmount * 10) / 100;
+
+            // Yeni teklifin tarihini şu anki zamana ayarlar
             objDTO.BidDate = DateTime.Now;
+
+            // Yeni teklif veritabanına eklenir
             context.Bids.Add(objDTO);
+
+            // Değişiklikler veritabanına kaydedilir
             await context.SaveChangesAsync();
+
+            // Yanıt nesnesine başarılı olduğunu işaretler
             response.isSuccess = true;
+
+            // Yanıtın sonucunu mevcut teklif listesi olarak belirler
             response.Result = result;
+
+            // Yanıtı döndürür
             return response;
 
 
@@ -59,19 +84,29 @@ namespace MyGalaxy_Auction_Business.Concrete
 
         public async Task<ApiResponse> CreateBid(CreateBidDTO model)
         {
+            // Aktif olup olmadığını kontrol etmek için ilgili aracın durumunu sorgular
             var returnValue = await CheckIsActive(model.VehicleId);
+
+            // Kullanıcının ilgili araç için ödeme yapmış olup olmadığını kontrol eder
             var isPaid = await CheckIsPaidAuction(model.UserId, model.VehicleId);
+
+            // Kullanıcı ödeme yapmamışsa, işlem başarısız olur ve uygun bir hata mesajı eklenerek yanıt döndürülür
             if (!isPaid)
             {
                 response.isSuccess = false;
                 response.ErrorMessages.Add("Please before pay auction price");
                 return response;
             }
+
+            // Aracın aktif olup olmadığını kontrol eder; eğer araç aktif değilse, işlem başarısız olur ve uygun bir hata mesajı eklenerek yanıt döndürülür
             if (returnValue == null)
             {
                 response.isSuccess = false;
                 response.ErrorMessages.Add("this car is not active");
+                return response;
             }
+
+            // Kullanıcının verdiği teklifin aracın varsayılan fiyatını geçip geçmediğini kontrol eder
             if (returnValue.Price >= model.BidAmount)
             {
                 response.isSuccess = false;
@@ -178,25 +213,43 @@ namespace MyGalaxy_Auction_Business.Concrete
 
 
 
+        // Verilen vehicleId ile eşleşen ve aktif olan bir aracı sorgular
         private async Task<Vehicle> CheckIsActive(int vehicleId)
         {
-            var obj = await context.Vehicles.Where(x => x.VehicleId == vehicleId && x.IsActive == true && x.EndTime >= DateTime.Now).FirstOrDefaultAsync();
+            // Veritabanından, verilen vehicleId'ye sahip ve aktif olan bir aracı getirir.
+            // Ayrıca aracın EndTime'ı şu andan büyük olmalıdır.
+            var obj = await context.Vehicles
+                .Where(x => x.VehicleId == vehicleId && x.IsActive == true && x.EndTime >= DateTime.Now)
+                .FirstOrDefaultAsync();
+
+            // Eğer böyle bir araç bulunursa (obj null değilse), bu aracı döndürür.
             if (obj != null)
             {
                 return obj;
             }
+
+            // Eğer verilen vehicleId ile eşleşen bir araç bulunamazsa veya bulunan araç aktif değilse, null döndürür.
             return null;
         }
 
-        private async Task<bool> CheckIsPaidAuction(string userId,int vehicleId)
+        // Bu metot, bir kullanıcının belirli bir araç için ödeme yapmış olup olmadığını kontrol eder.
+        private async Task<bool> CheckIsPaidAuction(string userId, int vehicleId)
         {
-            var obj = await context.PaymentHistories.Where(x => x.UserId == userId && x.VehicleId == vehicleId && x.IsActive == true).FirstOrDefaultAsync();
-            if (obj!=null)
+            // Ödeme geçmişini veritabanından sorgular
+            var obj = await context.PaymentHistories
+                .Where(x => x.UserId == userId && x.VehicleId == vehicleId && x.IsActive == true)
+                .FirstOrDefaultAsync();
+
+            // Eğer ödeme geçmişi bulunursa (obj null değilse), kullanıcı ödeme yapmıştır ve true döndürülür.
+            if (obj != null)
             {
                 return true;
             }
-            return false;   
+
+            // Eğer ödeme geçmişi bulunamazsa veya bulunan geçmiş aktif değilse, kullanıcı ödeme yapmamıştır ve false döndürülür.
+            return false;
         }
+
 
 
 
