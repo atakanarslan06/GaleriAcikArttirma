@@ -106,37 +106,61 @@ namespace MyGalaxy_Auction_Business.Concrete
                 return response;
             }
 
-            // Kullanıcının verdiği teklifin aracın varsayılan fiyatını geçip geçmediğini kontrol eder
+            // Eğer kullanıcı tarafından girilen teklif, aracın varsayılan fiyatını geçmiyorsa,
+            // işlem başarısız olur ve uygun bir hata mesajı ile birlikte yanıt döndürülür
             if (returnValue.Price >= model.BidAmount)
             {
                 response.isSuccess = false;
                 response.ErrorMessages.Add($"You should surpass the default price for this car {returnValue.Price}");
                 return response;
             }
+
+            // Eğer model null değilse, en yüksek teklifi (topPrice) ve kullanıcının girdiği teklifi kontrol eder
             if (model != null)
             {
-                var topPrice = await context.Bids.Where(x => x.VehicleId == model.VehicleId).OrderByDescending(x => x.BidAmount).ToListAsync();
+                // Belirli bir araca ait en yüksek teklifi getirir
+                var topPrice = await context.Bids
+                    .Where(x => x.VehicleId == model.VehicleId)
+                    .OrderByDescending(x => x.BidAmount)
+                    .ToListAsync();
+
+                // Eğer en yüksek teklif bulunursa ve model null değilse devam eder
                 if (topPrice.Count != 0)
                 {
-                    if (topPrice[0].BidAmount >= model.BidAmount && model.BidAmount < topPrice[0].BidAmount + (topPrice[0].BidAmount * 1) / 100) 
+                    // Kullanıcının girdiği teklif, en yüksek teklifin altında veya çok yakınındaysa
+                    // işlem başarısız olur ve uygun bir hata mesajı ile birlikte yanıt döndürülür
+                    if (topPrice[0].BidAmount >= model.BidAmount && model.BidAmount < topPrice[0].BidAmount + (topPrice[0].BidAmount * 1) / 100)
                     {
                         response.isSuccess = false;
                         response.ErrorMessages.Add("Entry bid amount,not lower than higher price to the system; higher price is : " + topPrice[0].BidAmount + (topPrice[0].BidAmount * 1) / 100);
                         return response;
                     }
                 }
+                // Yeni bir teklif nesnesi oluşturulur ve CreateBidDTO modelinden haritalama yapılır
                 Bid bid = mapper.Map<Bid>(model);
+
+                // Yeni teklife şu anki zaman atanır
                 bid.BidDate = DateTime.Now;
+
+                // Yeni teklif veritabanına eklenir
                 await context.Bids.AddAsync(bid);
-                if (await context.SaveChangesAsync()>0)
+
+                // Değişiklikler veritabanına başarıyla kaydedilirse
+                if (await context.SaveChangesAsync() > 0)
                 {
-                    var userDetail = await context.Bids.Include(x=>x.User).Where(x => x.UserId == model.UserId).FirstOrDefaultAsync();
+                    // Teklif veritabanına kaydedildiği için kullanıcıya teklifin başarıyla kaydedildiğine dair bir bilgi e-postası gönderilir
+                    var userDetail = await context.Bids
+                        .Include(x => x.User)
+                        .Where(x => x.UserId == model.UserId)
+                        .FirstOrDefaultAsync();
                     _mailService.SendEmail("Your bid is success", "Your bid is :" + bid.BidAmount, bid.User.UserName);
+
+                    // Yanıtın başarılı olduğunu ve sonucun model olduğunu işaretler ve yanıtı döndürür
                     response.isSuccess = true;
                     response.Result = model;
                     return response;
                 }
-             
+
             }
             response.isSuccess = false;
             response.ErrorMessages.Add("Ooops! sometihng went wrong");
