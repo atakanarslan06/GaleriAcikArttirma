@@ -1,4 +1,5 @@
-﻿using MyGalaxy_Auction.Hubs.ConnectionManagement;
+﻿using BusinessLayer.Concrete;
+using MyGalaxy_Auction.Hubs.ConnectionManagement;
 using MyGalaxy_Auction_Business.Abstraction;
 using MyGalaxy_Auction_Business.Concrete;
 using MyGalaxy_Auction_Core.MailHelper;

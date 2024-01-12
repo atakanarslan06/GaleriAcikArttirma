@@ -7,7 +7,7 @@ using MyGalaxy_Auction_Core.Models;
 using MyGalaxy_Auction_Data_Access.Context;
 using MyGalaxy_Auction_Data_Access.Domain;
 
-namespace MyGalaxy_Auction_Business.Concrete
+namespace BusinessLayer.Concrete
 {
     public class BidService : IBidService
     {
@@ -16,7 +16,7 @@ namespace MyGalaxy_Auction_Business.Concrete
         private readonly ApiResponse response;
         private readonly IMailService _mailService;
 
-        public BidService(ApplicationDbContext context,IMailService mailService,IMapper mapper,ApiResponse response)
+        public BidService(ApplicationDbContext context, IMailService mailService, IMapper mapper, ApiResponse response)
         {
             this.context = context;
             this.mapper = mapper;
@@ -33,7 +33,7 @@ namespace MyGalaxy_Auction_Business.Concrete
             if (!isPaid)
             {
                 response.isSuccess = false;
-                response.ErrorMessages.Add("Please before pay auction price");
+                response.ErrorMessages.Add("Lütfen önce açık arttırmaya katılmak için gereken miktarı ödeyin.");
                 return response;
             }
 
@@ -54,7 +54,7 @@ namespace MyGalaxy_Auction_Business.Concrete
             var objDTO = mapper.Map<Bid>(model);
 
             // Yeni teklifin tutarını belirler. Mevcut en yüksek teklifin %10 üstüne eklenir
-            objDTO.BidAmount = result[0].BidAmount + (result[0].BidAmount * 10) / 100;
+            objDTO.BidAmount = result[0].BidAmount + result[0].BidAmount * 100 / 1;
 
             // Yeni teklifin tarihini şu anki zamana ayarlar
             objDTO.BidDate = DateTime.Now;
@@ -94,7 +94,7 @@ namespace MyGalaxy_Auction_Business.Concrete
             if (!isPaid)
             {
                 response.isSuccess = false;
-                response.ErrorMessages.Add("Please before pay auction price");
+                response.ErrorMessages.Add("Lütfen önce açık arttırmaya katılmak için gereken miktarı ödeyin.");
                 return response;
             }
 
@@ -102,7 +102,7 @@ namespace MyGalaxy_Auction_Business.Concrete
             if (returnValue == null)
             {
                 response.isSuccess = false;
-                response.ErrorMessages.Add("this car is not active");
+                response.ErrorMessages.Add("Araba açık arttırma için aktif değil");
                 return response;
             }
 
@@ -111,7 +111,7 @@ namespace MyGalaxy_Auction_Business.Concrete
             if (returnValue.Price >= model.BidAmount)
             {
                 response.isSuccess = false;
-                response.ErrorMessages.Add($"You should surpass the default price for this car {returnValue.Price}");
+                response.ErrorMessages.Add($"Varsayılan fiyattan daha küçük fiyat girişi yapamazsınız. {returnValue.Price}");
                 return response;
             }
 
@@ -129,10 +129,10 @@ namespace MyGalaxy_Auction_Business.Concrete
                 {
                     // Kullanıcının girdiği teklif, en yüksek teklifin altında veya çok yakınındaysa
                     // işlem başarısız olur ve uygun bir hata mesajı ile birlikte yanıt döndürülür
-                    if (topPrice[0].BidAmount >= model.BidAmount && model.BidAmount < topPrice[0].BidAmount + (topPrice[0].BidAmount * 1) / 100)
+                    if (topPrice[0].BidAmount >= model.BidAmount && model.BidAmount < topPrice[0].BidAmount + topPrice[0].BidAmount * 100 / 1)
                     {
                         response.isSuccess = false;
-                        response.ErrorMessages.Add("Entry bid amount,not lower than higher price to the system; higher price is : " + topPrice[0].BidAmount + (topPrice[0].BidAmount * 1) / 100);
+                        response.ErrorMessages.Add("En Az Bu Miktarı Girmelisiniz. " + topPrice[0].BidAmount + topPrice[0].BidAmount * 100 / 1);
                         return response;
                     }
                 }
@@ -153,7 +153,7 @@ namespace MyGalaxy_Auction_Business.Concrete
                         .Include(x => x.User)
                         .Where(x => x.UserId == model.UserId)
                         .FirstOrDefaultAsync();
-                    _mailService.SendEmail("Your bid is success", "Your bid is :" + bid.BidAmount, bid.User.UserName);
+                    _mailService.SendEmail("Teklifiniz Başarılı", "Teklifiniz :" + bid.BidAmount, bid.User.UserName);
 
                     // Yanıtın başarılı olduğunu ve sonucun model olduğunu işaretler ve yanıtı döndürür
                     response.isSuccess = true;
@@ -163,31 +163,31 @@ namespace MyGalaxy_Auction_Business.Concrete
 
             }
             response.isSuccess = false;
-            response.ErrorMessages.Add("Ooops! sometihng went wrong");
+            response.ErrorMessages.Add("Ooops! Bir şeyler yanlış gitti");
             return response;
         }
 
         public async Task<ApiResponse> GetBidById(int bidId)
         {
-            var result = await context.Bids.Include(x=>x.User).Where(x => x.BidId == bidId).FirstOrDefaultAsync();
-            if(result == null)
+            var result = await context.Bids.Include(x => x.User).Where(x => x.BidId == bidId).FirstOrDefaultAsync();
+            if (result == null)
             {
                 response.isSuccess = false;
-                response.ErrorMessages.Add("bid is not found");
+                response.ErrorMessages.Add("Teklif bulunamadı");
                 return response;
             }
 
             response.isSuccess = true;
             response.Result = result;
             return response;
-        
-        
+
+
         }
 
         public async Task<ApiResponse> GetBidByVehicleId(int vehicleId)
         {
-            var obj = await context.Bids.Include(x=>x.Vehicle).ThenInclude(x=>x.Bids).Where(x => x.VehicleId == vehicleId).ToListAsync();
-            if (obj!=null)
+            var obj = await context.Bids.Include(x => x.Vehicle).ThenInclude(x => x.Bids).Where(x => x.VehicleId == vehicleId).ToListAsync();
+            if (obj != null)
             {
                 response.isSuccess = true;
                 response.Result = obj;
@@ -204,14 +204,14 @@ namespace MyGalaxy_Auction_Business.Concrete
             if (!isPaid)
             {
                 response.isSuccess = false;
-                response.ErrorMessages.Add("Please before pay auction price");
+                response.ErrorMessages.Add("Lütfen önce açık arttırmaya katılmak için gereken miktarı ödeyin.");
                 return response;
             }
             var result = await context.Bids.FindAsync(bidId);
             if (result == null)
             {
                 response.isSuccess = false;
-                response.ErrorMessages.Add("bid is not found");
+                response.ErrorMessages.Add("Teklif bulunamadı");
                 return response;
             }
             if (result.BidAmount < model.BidAmount && result.UserId == model.UserId)
@@ -223,14 +223,14 @@ namespace MyGalaxy_Auction_Business.Concrete
                 await context.SaveChangesAsync();
                 return response;
             }
-            else if(result.BidAmount >= model.BidAmount)
+            else if (result.BidAmount >= model.BidAmount)
             {
                 response.isSuccess = false;
-                response.ErrorMessages.Add("You are not entry low price than your old bid amount,your older bid amount is : " + result.BidAmount);
+                response.ErrorMessages.Add("Eski Teklif Tutarınızdan Daha Düşük Fiyat Teklifi Yapamazsınız. " + result.BidAmount);
                 return response;
             }
             response.isSuccess = false;
-            response.ErrorMessages.Add("Something went wrong");
+            response.ErrorMessages.Add("Bir şeyler yanlış gitti");
             return response;
 
         }

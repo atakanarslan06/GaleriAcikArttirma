@@ -32,7 +32,7 @@ function CreateBid(props:{vehicleId:number}) {
       
         if (response.data.isSuccess === true) {
           Dispatch(setBidChange(bidModel.bidAmount))
-          ToastrNotify("You are bid is success","success");
+          ToastrNotify("Teklinifiz Başarılı","success");
       }
     
       if (response.data.isSuccess === false) {
@@ -47,10 +47,12 @@ function CreateBid(props:{vehicleId:number}) {
   return (
     <div className='container' >
         <form>
-            <label htmlFor='bidAmount' >Bid Amount : </label>
+            <label htmlFor='bidAmount' >Teklif Tutarı : </label>
+            <br></br>
             <input type='number' className='form-control' id='bidAmount' name='bidAmount' onChange={(e)=>setBidAmountState(e.target.value)} />
                 <div className='text-center mb-3 ' >
-                    <button type='button' onClick={()=>handleCreateBid()}  >Place Bid</button>
+                  <br></br>
+                    <button type='button' onClick={()=>handleCreateBid()}  >Teklif Ver</button>
                 </div>
         </form>
     </div>
