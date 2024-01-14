@@ -19,16 +19,14 @@ function CreateBid(props:{vehicleId:number}) {
 
     const [bidAmount,setBidAmountState] = useState("");
 
-  const bidModel : bidModel = {
-    bidAmount : parseInt(bidAmount),
-    userId : userStore.nameid!,
-    vehicleId: props.vehicleId,
+ 
   }
 
 
 
   const handleCreateBid = () =>{
     createBid(bidModel).then((response:any) => {
+
       
         if (response.data.isSuccess === true) {
           Dispatch(setBidChange(bidModel.bidAmount))
