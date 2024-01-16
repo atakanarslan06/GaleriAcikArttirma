@@ -27,20 +27,20 @@ function CreateBid(props:{vehicleId:number}) {
 
 
 
-  // const handleCreateBid = () =>{
-  //   createBid(bidModel).then((response:any) => {
+  const handleCreateBid = () =>{
+    createBid(bidModel).then((response:any) => {
       
       
-  //       if (response.data.isSuccess === true) {
-  //         Dispatch(setBidChange(bidModel.bidAmount))
-  //         ToastrNotify("Teklinifiz Başarılı","success");
-  //     }
+        if (response.data.isSuccess === true) {
+          Dispatch(setBidChange(bidModel.bidAmount))
+          ToastrNotify("Teklinifiz Başarılı","success");
+      }
     
-  //     if (response.data.isSuccess === false) {
-  //       ToastrNotify(response.data.errorMessages[0],"error");
-  //     }
-  //   })
-  // }
+      if (response.data.isSuccess === false) {
+        ToastrNotify(response.data.errorMessages[0],"error");
+      }
+    })
+  }
 
 
 
