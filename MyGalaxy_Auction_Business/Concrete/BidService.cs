@@ -6,7 +6,7 @@ using MyGalaxy_Auction_Core.MailHelper;
 using MyGalaxy_Auction_Core.Models;
 using MyGalaxy_Auction_Data_Access.Context;
 using MyGalaxy_Auction_Data_Access.Domain;
-
+using System.IdentityModel;
 namespace BusinessLayer.Concrete
 {
     public class BidService : IBidService
