@@ -11,10 +11,10 @@ namespace BusinessLayer.Concrete
 {
     public class BidService : IBidService
     {
-        //private readonly ApplicationDbContext context;
-        //private readonly IMapper mapper;
-        //private readonly ApiResponse response;
-        //private readonly IMailService _mailService;
+        private readonly ApplicationDbContext context;
+        private readonly IMapper mapper;
+        private readonly ApiResponse response;
+        private readonly IMailService _mailService;
 
         public BidService(ApplicationDbContext context, IMailService mailService, IMapper mapper, ApiResponse response)
         {
